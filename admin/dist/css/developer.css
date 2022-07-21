@@ -1,0 +1,26 @@
+.small-box h3, .small-box p {
+color:#FFFFFF;
+}
+  .text_black a
+  {
+   color:#000000 !important;
+  }
+  .detail-row
+  {
+     display:none;
+	/* visibility:hidden; */
+  }
+  .open
+  {
+    display:table-row;
+	/* visibility:visible;*/
+  }
+  .page-link
+  {
+    display:inline-block !important;
+  }
+  .page-link-active
+  {
+    background-color:#E0A800;
+	color:#333333;
+  }
