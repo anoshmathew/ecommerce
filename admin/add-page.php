@@ -168,7 +168,6 @@ if(isset($_GET['edit']))
 		$img_arr = $objgen->get_AllRows("page_img",0,$img_count,"id asc",$where);
 	}
 
-
 }
 if(isset($_POST['Update']))
 {    
@@ -176,7 +175,6 @@ if(isset($_POST['Update']))
 	$description   	= $_POST['description'];
 	$pages         	= $objgen->check_input($_POST['pages']);  
 	
-	   
 	$errors        	= array();
 	$rules		    = array();
 	$rules[] 	    = "required,title,Enter the Title";
@@ -293,7 +291,7 @@ if(isset($_POST['Cancel']))
         <div class="row" style="clear:both;margin-bottom:10px;">
 		  <div class="col-md-12" align="right" style="clear:both">
 			<a type="button"  class="btn btn-inline btn-danger" href="<?=$add_url?>" ><i class="fa fa-edit"></i> New</a>
-			<button type="button"  class="btn btn-inline btn-primary" onClick="click_button(2)" ><i class="fa fa-search"></i> Search</button>
+				<button type="button"  class="btn btn-inline btn-primary" onClick="click_button(2)" ><i class="fa fa-search"></i> Search</button>
 			<a type="button" href="<?=$list_url?>"  class="btn btn-inline btn-warning"><i class="fa fa-refresh"></i> Reset</a>
 		  </div>
 		</div>
@@ -442,21 +440,21 @@ if(isset($_POST['Cancel']))
 			</div>
 			
 			<div class="card-footer center">
-			<?php
-			if(isset($_GET['edit']))
-			{
-			?>
-			<button class="btn btn-primary" type="submit" name="Update"><i class="ace-icon fa fa-check bigger-110"></i>&nbsp;Update
-			</button>
-			<?php
-			}
-			else
-			{
-			?>
-			<button type="submit" class="btn btn-primary" name="Create" ><span class="fa fa-save  ace-icon"></span>&nbsp;Save</button>
-			<?php
-			}
-			?>
+				<?php
+				if(isset($_GET['edit']))
+				{
+				?>
+				<button class="btn btn-primary" type="submit" name="Update"><i class="ace-icon fa fa-check bigger-110"></i>&nbsp;Update
+				</button>
+				<?php
+				}
+				else
+				{
+				?>
+				<button type="submit" class="btn btn-primary" name="Create" ><span class="fa fa-save  ace-icon"></span>&nbsp;Save</button>
+				<?php
+				}
+				?>
 			<a class="btn btn-warning" type="reset"  href="<?=$list_url?>"><i class="ace-icon fa fa-undo"></i>&nbsp;Cancel </a>
 			
 			</div>
@@ -464,11 +462,7 @@ if(isset($_POST['Cancel']))
         </div>
       </div>
     </div>
-		  
-		  
-		
-		
-        
+ 
         <!-- /.row (main row) -->
       </div><!-- /.container-fluid -->
     </section>
@@ -482,7 +476,6 @@ if(isset($_POST['Cancel']))
 
  <?php require_once "footer-script.php"; ?>
 
-	
 	<script src="<?=URLAD?>plugins/summernote/summernote-bs4.min.js"></script>
 <script>
   $(function () {

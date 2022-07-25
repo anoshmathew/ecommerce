@@ -30,8 +30,8 @@ if($_GET['msg']==5)
 }
 if(isset($_GET['del']))
 {
-	$id		= $_GET['del']; 
-	$where   = "AND prod_id=".$id;
+	$id			= $_GET['del']; 
+	$where   	= "AND prod_id=".$id;
 	$prodimg_count= $objgen->get_AllRowscnt("product_image",$where);
 	if($prodimg_count>0)
 	{
@@ -84,19 +84,21 @@ if(isset($_GET['feat']))
 	
 	 header('location:'.$list_url.'/?msg=5&page='.$page);
 }
+
 if(isset($_GET['b_sell']))
 {
 	 $b_sell 		= $_GET['b_sell'];
 	 $b_sell_arr 	= $objgen->get_Onerow("product"," AND id=".$b_sell);
 	 if($b_sell_arr['best_seller']=='yes')
-	  $status 	= "no";
+	  $status 		= "no";
 	 if($b_sell_arr['best_seller']=='no')
-	  $status 	= "yes";
+	  $status 		= "yes";
 	 
-	 $msg		=	$objgen->upd_Row("product","best_seller='$status'","id=".$b_sell);
+	 $msg			=	$objgen->upd_Row("product","best_seller='$status'","id=".$b_sell);
 	
 	 header('location:'.$list_url.'/?msg=5&page='.$page);
 }
+
 if(isset($_POST['Search']))
 {
 	$page		=	1;
@@ -116,29 +118,32 @@ if(isset($_REQUEST['ut']) &&  trim($_REQUEST['ut'])!="")
 	$where .= " and category  =".$ut;
 	$srdiv  = "block";
 }
+
 if(isset($_REQUEST['uu']) &&  trim($_REQUEST['uu'])!="")
 {
 	$uu     = trim($_REQUEST['uu']);
 	$where .= " and sub_category ='".$uu."'";
 	$srdiv  = "block";
 }
+
 if(isset($_REQUEST['uw']) &&  trim($_REQUEST['uw'])!="")
 {
 	$uw 	= trim($_REQUEST['uw']);
 	$where .= " and product_name like '%".$uw."%'";
 	$srdiv  = "block";
 }
-$row_count = $objgen->get_AllRowscnt("product",$where);
+
+$row_count 	= $objgen->get_AllRowscnt("product",$where);
 if($row_count>0)
 {
 	  $objPN->setCount($row_count);
 	  $objPN->pageSize($pagesize);
 	  $objPN->setCurrPage($page);
 	  $objPN->setDispType('PG_BOOSTRAP_AD');
-	  $pages = $objPN->get(array("us" => $us,"ut" => $ut,"uu" => $uu,"uw" => $uw), 
-	  1, WEBLINKAD."/".$params[0]."/", "", "active");
-	  $res_arr = $objgen->get_AllRows("product",$pagesize*($page-1),$pagesize,"id desc",$where);
+	  $pages 	= $objPN->get(array("us" => $us,"ut" => $ut,"uu" => $uu,"uw" => $uw), 1, WEBLINKAD."/".$params[0]."/", "", "active");
+	  $res_arr 	= $objgen->get_AllRows("product",$pagesize*($page-1),$pagesize,"id desc",$where);
 }
+
 $where   = "";
 $cat_count= $objgen->get_AllRowscnt("category",$where);
 if($cat_count>0)
@@ -149,13 +154,14 @@ if($cat_count>0)
 if($ut!="")
 {
 
-		$where		= " and cat_id=".$ut;
-		$sub_cat_count= $objgen->get_AllRowscnt("sub_category",$where);
+		$where			= " and cat_id=".$ut;
+		$sub_cat_count	= $objgen->get_AllRowscnt("sub_category",$where);
 		if($sub_cat_count>0)
 		{
 			$sub_cat_arr = $objgen->get_AllRows("sub_category",0,$sub_cat_count,"sub_cat_name asc",$where);
 		}		
 }
+
 if(isset($_POST['Reset']))
 {
 	unset($_REQUEST);
@@ -246,7 +252,7 @@ if(isset($_POST['Reset']))
 			?>
             <div class="alert alert-success alert-dismissable">
               <button type="button" class="close" data-dismiss="alert" aria-hidden="true"> <i class="ace-icon fa fa-times"></i> </button>
-              <strong> <i class="ace-icon fa fa-check"></i> Sucsess! </strong> <?php echo $msg2; ?> <br>
+              <strong> <i class="ace-icon fa fa-check"></i> Success! </strong> <?php echo $msg2; ?> <br>
             </div>
             <?php
 			}

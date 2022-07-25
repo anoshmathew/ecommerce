@@ -1,12 +1,15 @@
 <?php
 require_once "includes/includepath.php";
 require_once "chk_login.php";
+
 $objgen		= new general();
 $objval		= new validate();
+
 $pagehead	= "Shipping Charge";
 $list_url 	= URLAD."shipping-charge";
 $srdiv    	= "none";
 $adddiv   	= "none";
+
 $objPN		= 	new page(1);
 $pagesize	=	20;
 $page	 	= 	isset($_REQUEST['page'])	?	$_REQUEST['page']	:	"1";
@@ -20,12 +23,14 @@ if(isset($_GET['del']))
 		header("location:".$list_url."/?msg=3&page=".$page);
 	}
 }
+
 if($_GET['msg']==1)
 {
   	$msg2 		= "$pagehead Created Successfully.";
   	$adddiv   	= "show";
   	$srdiv    	= "none";
 }
+
 if($_GET['msg']==2)
 {
   	$msg2 = "$pagehead Updated Successfully.";
@@ -35,34 +40,30 @@ if($_GET['msg']==3)
 {
   	$msg2 = "$pagehead  Deleted Successfully.";
 }
+
 if(isset($_POST['Create']))
 { 
-   	$name  			= $objgen->check_input($_POST['name']);
-	$india  		= $objgen->check_input($_POST['india']);
-   	$international  = $objgen->check_input($_POST['international']);
-   	$kerala   		= $objgen->check_input($_POST['kerala']);
-	if($india=="")
-	{
-		$india=0;
-	}
-	if($international=="")
-	{
-		$international=0;
-	}
-	if($kerala=="")
-	{
-		$kerala=0;
-	}
-   	$rules		=	array();
-   	$rules[] 	=	"required,name,Enter the Shipping Name";
-   	$errors  	=	$objval->validateFields($_POST, $rules);  
-    $brd_exit 	= $objgen->chk_Ext("shipping_charge","name='$name'");
+   	$name  			= 	$objgen->check_input($_POST['name']);
+	$india  		= 	$objgen->check_input($_POST['india']);
+   	$international  = 	$objgen->check_input($_POST['international']);
+   	$kerala   		= 	$objgen->check_input($_POST['kerala']);
+
+   	$rules			=	array();
+	$rules[] 		= 	"required,name,Enter the Shipping Name";
+	$rules[] 		= 	"required,india,Enter the Shipping Inida(Amount)";
+	$rules[] 		= 	"required,international,Enter the Shipping International(Amount)";
+	$rules[] 		= 	"required,kerala,Enter the Shipping Kerala(Amount)";
+	
+   	$errors  		=	$objval->validateFields($_POST, $rules);  
+    $brd_exit 		= 	$objgen->chk_Ext("shipping_charge","name='$name'");
+	
 	if($brd_exit>0)
 	{
-		$errors[]= "This Shipping Name is already exists.";
-		$adddiv  = "show";
-		$srdiv   = "none";
+		$errors[]	= 	"This Shipping Name is already exists.";
+		$adddiv  	= 	"show";
+		$srdiv   	= 	"none";
 	}
+	
    	if(empty($errors))
 	{
 		 $msg = $objgen->ins_Row('shipping_charge','name,shipping_indian,shipping_international,shipping_kerala',"'".$name."','".$india."','".$international."','".$kerala."'");
@@ -71,7 +72,12 @@ if(isset($_POST['Create']))
 			   header("location:".$list_url."/?msg=1");
 		 }
 	}
+	else{
+		$adddiv  = "show";
+		$srdiv   = "none";
+	}
 }
+
 if(isset($_GET['edit']))
 {
 	$id 				= $_GET['edit'];
@@ -80,37 +86,34 @@ if(isset($_GET['edit']))
 	$india   			= $objgen->check_tag($result['shipping_indian']);
 	$international   	= $objgen->check_tag($result['shipping_international']);
 	$kerala   			= $objgen->check_tag($result['shipping_kerala']);
+	
 	$adddiv  			= "show";
+	$srdiv   			= "none";
+	
 }
+
 if(isset($_POST['Update']))
 {    
 	$name  			 = $objgen->check_input($_POST['name']);
     $india  		 = $objgen->check_input($_POST['india']);
     $international   = $objgen->check_input($_POST['international']);
     $kerala   		 = $objgen->check_input($_POST['kerala']); 
-    if($india=="")
-	{
-		$india=0;
-	}
-	if($international=="")
-	{
-		$international=0;
-	}
-	if($kerala=="")
-	{
-		$kerala=0;
-	}
+    
 	$errors = array();
 	$rules		=	array();
 	$rules[] 	= 	"required,name,Enter the Shipping Name";
+	$rules[] 	= 	"required,india,Enter the Shipping India(Amount)";
+	$rules[] 	= 	"required,international,Enter the Shipping International(Amount)";
+	$rules[] 	= 	"required,kerala,Enter the Shipping Kerala(Amount)";
 	$errors  	= 	$objval->validateFields($_POST, $rules);
 	
-	$brd_exit = $objgen->chk_Ext("tax","name= '$name' and id<>".$id);
+	$brd_exit 	= $objgen->chk_Ext("shipping_charge","name='$name' and id<>$id");
 	if($brd_exit>0)
 	{
-		$errors[]	= "This $pagehead is already exists.";
-		$adddiv   	= "show";
-		$srdiv    	= "none";
+		$errors[]		= "This Shipping Name is already exists.";
+		
+		$adddiv  		= "show";
+		$srdiv   		= "none";
 	}
 	if(empty($errors))
 	{	 
@@ -125,24 +128,30 @@ if(isset($_POST['Update']))
 if(isset($_POST['Search']))
 {
 	$page=1;
+	
+	$srdiv    	 = "block";
+	$adddiv  	 = "none";
 }
+
 $where = "";
 if(isset($_REQUEST['un']) &&  trim($_REQUEST['un'])!="")
 {
 	$un = trim($_REQUEST['un']);
 	$where 		.= " and name like '%".$un."%'";
-	$srdiv    	 = "block";
+
 }
-$row_count = $objgen->get_AllRowscnt("shipping_charge",$where);
+
+$row_count		 = $objgen->get_AllRowscnt("shipping_charge",$where);
 if($row_count>0)
 {
 	$objPN->setCount($row_count);
 	$objPN->pageSize($pagesize);
 	$objPN->setCurrPage($page);
 	$objPN->setDispType('PG_BOOSTRAP_AD');
-	$pages = $objPN->get(array("un" => $un), 1, WEBLINKAD."/".$params[0]."/", "", "active");
-	$res_arr = $objgen->get_AllRows("shipping_charge",$pagesize*($page-1),$pagesize,"id desc",$where);
+	$pages 		= $objPN->get(array("un" => $un), 1, WEBLINKAD."/".$params[0]."/", "", "active");
+	$res_arr 	= $objgen->get_AllRows("shipping_charge",$pagesize*($page-1),$pagesize,"id desc",$where);
 }
+
 if(isset($_POST['Reset']))
 {
 	unset($_REQUEST);
@@ -238,7 +247,7 @@ if(isset($_POST['Reset']))
 			</button>
 			<strong>
 			<i class="ace-icon fa fa-check"></i>
-			Sucsess!
+			Success!
 			</strong>
 			<?php echo $msg2; ?>
 			<br>
@@ -260,24 +269,24 @@ if(isset($_POST['Reset']))
 								<div class="col-md-6">
 									<div class="form-group">
 									<label for="name">Shipping Name <span class="error" style="color:red;">*</span></label>
-       								<input type="text" class="form-control" value="<?=$name?>" name="name" id="name" placeholder="Shipping Name" required />
+       								<input type="text" class="form-control" value="<?=$name?>" name="name" id="name" placeholder="Shipping Name"  />
 									</div>
 								</div>			
 								<div class="col-md-6">
 								<div class="form-group">
-								<label for="state">Shipping Kerala (Amount)</label>
+								<label for="state">Shipping Kerala (Amount)<span class="error" style="color:red;">*</span></label>
 								<input type="text" class="form-control" value="<?=$kerala?>" name="kerala" id="kerala" placeholder="Shipping Kerala (Amount)"/>
 								</div>
 								</div>
 								<div  class="col-md-6">
 								<div class="form-group">
-                                <label for="india">Shipping India (Amount)</label>
+                                <label for="india">Shipping India (Amount)<span class="error" style="color:red;">*</span></label>
 								<input type="text" class="form-control" value="<?=$india?>" name="india" id="india" placeholder="Shipping India (Amount" />
                                        </div>
 										</div>			
 								<div  class="col-md-6">
 								<div class="form-group">
-                                <label for=""> Shipping International (Amount)</label>
+                                <label for=""> Shipping International (Amount)<span class="error" style="color:red;">*</span></label>
 								<input type="text" class="form-control" value="<?=$international?>" name="international" id="international" placeholder=" Shipping International (Amount)"/>             
 									</div>
 							</div>

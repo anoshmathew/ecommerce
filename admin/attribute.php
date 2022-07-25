@@ -1,57 +1,70 @@
 <?php
 require_once "includes/includepath.php";
 require_once "chk_login.php";
+
 $objgen		=	new general();
 $objval	    =   new validate();
+
 $pagehead 	= "Attribute";
 $list_url 	= URLAD."attribute";
-//$add_url  = URLAD."add-user";
 $srdiv    	= "none";
 $adddiv   	= "none";
 $status   	= 'active';
+
 $objPN		= 	new page(1);
-/** Page Settings  **/
 $pagesize	=	20;
 $page	 	= isset($_REQUEST['page'])	?	$_REQUEST['page']	:	"1";
+
 if(isset($_GET['del']))
 {
-   $id= $_GET['del'];
-   $msg     = $objgen->del_Row("attributes_values","attr_id=".$id);
-   $msg     = $objgen->del_Row("attributes","id=".$id);
-    if($msg=="")
+   	$id= $_GET['del'];
+   	$msg     = $objgen->del_Row("attributes_values","attr_id=".$id);
+   	$msg     = $objgen->del_Row("attributes","id=".$id);
+    
+	if($msg=="")
    	{
 		header("location:".$list_url."/?msg=3&page=".$page);
    	}
 }
+
 if(isset($_GET['st']))
 {
 	 $id 		= $_GET['id'];
 	 $st 		= $_GET['st'];
+	 
 	 if($st	== 'active')
 	  $status 	= "inactive";
 	 if($st=='inactive')
 	  $status 	= "active"; 
+	  
 	 $msg		=	$objgen->upd_Row("attributes","status='$status'","id=".$id);
 	 header('location:'.$list_url.'/?msg=4&page='.$page);
 }
+
 if($_GET['msg']==1)
 {
   	$msg2 		= "Attribute Created Successfully.";
-   	$adddiv   	= "show";
-   	$srdiv    	= "none";
+	$adddiv   	= "show";
+	$srdiv    	= "none";
 }
+
 if($_GET['msg']==2)
 {
-  	$msg2 = "Attribute Updated Successfully.";
+  	$msg2 		= "Attribute Updated Successfully.";
+	$adddiv   	= "none";
+	$srdiv    	= "none";
 }
+
 if($_GET['msg']==4)
 {
   	$msg2 = "Status Changed Successfully.";
 }
+
 if($_GET['msg']==3)
 {
   	$msg2 = "Attribute Deleted Successfully.";
 }
+
 if(isset($_POST['Create']))
 {
    	$templt_name 	= $objgen->check_input($_POST['templt_name']);
@@ -59,24 +72,26 @@ if(isset($_POST['Create']))
    	$status  	 	= $objgen->check_input($_POST['status']);
    	$rules		    = array();
   	$rules[] 	    = "required,templt_name,Enter the Template Name";
-   	$rules[] 	    = "required,name,Enter the Attribute";
+   	$rules[] 	    = "required,name,Enter the Attribute Name";
    	$errors  	    = $objval->validateFields($_POST,$rules); 
    	$brd_exit   	= $objgen->chk_Ext("attributes","template_name='$templt_name'");
+	
 	if($brd_exit>0)
 	{
 		  $errors[] = "This Template is already exists.";
-		  $adddiv   = "show";
-  		  $srdiv    = "none";
 	} 
+	
 	if(empty($errors))
-	{
+	{	
         $msg = $objgen->ins_Row('attributes','name,template_name,status',"'".$name."','".$templt_name."','".$status."'");
-      	if($msg=="")
+      	
+		if($msg=="")
       	{
       		header("location:".$list_url."/?msg=1");
       	}
 	}
 }
+
 if(isset($_GET['edit']))
 {
     $id           	= $_GET['edit'];
@@ -87,35 +102,45 @@ if(isset($_GET['edit']))
 	$adddiv    		= "show";
     $srdiv     		= "none";
 }
+
 if(isset($_POST['Update']))
 {
 	$templt_name 	= $objgen->check_input($_POST['templt_name']);
 	$name  		 	= $objgen->check_input($_POST['name']);
    	$status  	 	= $objgen->check_input($_POST['status']);
-   	$rules		    = array();
+   	
+	$rules		    = array();
    	$rules[] 	    = "required,templt_name,Enter the Template Name";
-   	$rules[] 	    = "required,name,Enter the Attribute";
-   	$errors  	    = $objval->validateFields($_POST,$rules); 
+   	$rules[] 	    = "required,name,Enter the Attribute Name";
+   	
+	$errors  	    = $objval->validateFields($_POST,$rules); 
     $brd_exit   	= $objgen->chk_Ext("attributes","template_name='$templt_name and id<>$id'");
+	
 	if($brd_exit>0)
 	{
-		  $errors[] = "This Template is already exists.";
+		  $errors[] = "This Template Name is already exists.";
 		  $adddiv   = "show";
    		  $srdiv    = "none";
 	} 
 	if(empty($errors))
 	{
-		$msg = $objgen->upd_Row('attributes',"name='".$name."',template_name='".$templt_name."',status='".$status."'","id=".$id);
-      		 if($msg=="")
+		$msg 		= $objgen->upd_Row('attributes',"name='".$name."',template_name='".$templt_name."',status='".$status."'","id=".$id);
+      		 
+		if($msg=="")
       		 {
-      			   header("location:".$list_url."/?msg=1&page=".$page);
+      			   header("location:".$list_url."/?msg=2&page=".$page);
       		 }
 	}
 }
+
 if(isset($_POST['Search']))
 {
 	$page=1;
+
+	$srdiv    	 = "block";
+	$adddiv  	 = "none";
 }
+
 if(isset($_REQUEST['ta']) &&  trim($_REQUEST['ta'])!="")
 {
 	$ta 	= trim($_REQUEST['ta']);
@@ -123,6 +148,7 @@ if(isset($_REQUEST['ta']) &&  trim($_REQUEST['ta'])!="")
   	$srdiv  = "block";
   	$adddiv	= "none";
 }
+
 $row_count = $objgen->get_AllRowscnt("attributes",$where);
 if($row_count>0)
 {
@@ -130,14 +156,16 @@ if($row_count>0)
   	$objPN->pageSize($pagesize);
   	$objPN->setCurrPage($page);
   	$objPN->setDispType('PG_BOOSTRAP_AD');
-  	$pages 	= $objPN->get(array("ta" => $ta), 1, WEBLINKAD."/".$params[0]."/", "", "active");
-  	$res_arr= $objgen->get_AllRows("attributes",$pagesize*($page-1),$pagesize,"id desc",$where);
+  	$pages 		= $objPN->get(array("ta" => $ta), 1, WEBLINKAD."/".$params[0]."/", "", "active");
+  	$res_arr	= $objgen->get_AllRows("attributes",$pagesize*($page-1),$pagesize,"id desc",$where);
 }
+
 if(isset($_POST['Reset']))
 {
 	unset($_REQUEST);
 	header("location:".$list_url);
 }
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -178,7 +206,7 @@ if(isset($_POST['Reset']))
 			<div class="col-md-12" align="right" style="clear:both">
 				<button type="button"  class="btn btn-inline btn-danger" onClick="click_button(1)"><i class="fa fa-edit"></i> New</button>
 				<button type="button"  class="btn btn-inline btn-primary" onClick="click_button(2)" ><i class="fa fa-search"></i> Search</button>
-				<a type="button" href="<?=$list_url?>"  class="btn btn-inline btn-warning"><i class="fa fa-refresh"></i> Reset</a>
+
 			</div>
 		</div>		
 		<div class="row">
@@ -227,7 +255,7 @@ if(isset($_POST['Reset']))
 				</button>
 				<strong>
 					<i class="ace-icon fa fa-check"></i>
-					Sucsess!
+					Success!
 				</strong>
 				<?php echo $msg2; ?>
 				<br>
@@ -333,8 +361,9 @@ if(isset($_POST['Reset']))
 						<table class="table table-bordered table-hover table-sm">
 						<tr>
 						<th>Template Name</th>
-						<th>Attribute</th>
+						<th>Attribute Name</th>
 						<th>Attribute Value</th>
+						<th>Status</th>
 						<th>Action</th>
 						</tr>
 							<?php
@@ -347,24 +376,30 @@ if(isset($_POST['Reset']))
 						   <td><?php echo $objgen->check_tag($val['template_name']); ?></td>
 					       <td><?php echo $objgen->check_tag($val['name']); ?></td>
                            <td>	
-						   <a href="<?=URLAD?>attribute-values/?id=<?=$val['id']?>" role="button" class="btn btn-danger btn-sm" ><i class="fas  fa-plus bigger-120"></i>Add</a>
-						   </td>
-						  <td> 
-						  		 				<?php
-												if($val['status']=='active')
-												{
-												?>
-												<a href="<?=$list_url?>/?id=<?=$val['id']?>&page=<?=$page?>&st=<?php echo $val['status']; ?>" role="button" class="btn btn-success btn-sm" ><i class="fas fa-unlock"></i></a>
-												
-												<?php
-												}
-												else
-												{
-												?>
-												<a href="<?=$list_url?>/?id=<?=$val['id']?>&page=<?=$page?>&st=<?php echo $val['status']; ?>" role="button" class="btn btn-danger btn-sm" ><i class="fas fa-lock"></i></a>
-												<?php
-												}
-												?>
+						   <a href="<?=URLAD?>attribute-values/?id=<?=$val['id']?>" role="button" class="btn btn-danger btn-sm" ><i class="fas  fa-plus bigger-120"></i> Add</a>
+						   
+						</td>
+						<td>
+             			<?php
+             				if($val['status']=='active')
+             				{
+             					?>
+             					<a href="<?=$list_url?>/?id=<?=$val['id']?>&page=<?=$page?>&st=<?php echo $val['status']; ?>" role="button" >
+             					<span class="badge bg-success">Active</span>
+             					</a>
+             					<?php
+             				}
+             				else
+             				{
+             				?>
+             					<a href="<?=$list_url?>/?id=<?=$val['id']?>&page=<?=$page?>&st=<?php echo $val['status']; ?>" role="button" >
+             					<span class="badge bg-warning">Inactive</span>
+             					</a>
+             				<?php
+             				}
+             			?>
+            		</td>
+							<td>
 							<a href="<?=$list_url?>/?edit=<?=$val['id']?>&page=<?=$page?>" role="button" class="btn btn-primary btn-sm" ><i class="fas fa-edit"></i></a>
 							<a href="<?=$list_url?>/?del=<?=$val['id']?>&page=<?=$page?>" role="button" onClick="return confirm('Do you want to delete this Attribute?')" class="btn btn-danger btn-sm" ><i class="fas fa-trash-alt"></i></a>
 							</td>

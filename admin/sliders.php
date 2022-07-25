@@ -19,30 +19,16 @@ if(isset($_GET['del']))
 {
 	$id		= $_GET['del'];
 	$msg	= $objgen->del_Row("slider","id=".$id);
+	
 	if($msg=="")
 	{
 		header("location:".$list_url."/?msg=3&page=".$page);
 	}
 }
 
-if(isset($_GET['st']))
-{
-	 $id 	= $_GET['id'];
-	 $st 	= $_GET['st'];
-
-	 if($st=='active')
-	  $status 	= "inactive";
-
-	 if($st=='inactive')
-	  $status 	= "active";
-
-	 $msg	=	$objgen->upd_Row("slider","status='$status'","id=".$id);
-	 header('location:'.$list_url.'/?msg=4&page='.$page);
-}
-
 if($_GET['msg']==1)
 {
-  	$msg2 		  = "$pagehead Created Successfully.";
+  	$msg2 		= "$pagehead Created Successfully.";
   	$adddiv   	= "show";
   	$srdiv    	= "none";
 }
@@ -60,24 +46,25 @@ if($_GET['msg']==3)
 
 if(isset($_GET['delimg']))
 {
-    $id      			= $_GET['delimg'];
-	  $edit    			= $_GET['edit'];
-	  $result       = $objgen->get_Onerow("slider","AND id=".$id);
-	  $photo     		= $objgen->check_tag($result['image']);
+    $id      		= $_GET['delimg'];
+	$edit    		= $_GET['edit'];
+	$result       	= $objgen->get_Onerow("slider","AND id=".$id);
+	$photo     		= $objgen->check_tag($result['image']);
    
-   	 if(file_exists("../photos/orginal/".stripslashes($photo)))
+   	if(file_exists("../photos/orginal/".stripslashes($photo)))
 			unlink("../photos/orginal/".stripslashes($photo));
 
-   	 if(file_exists("../photos/medium/".stripslashes($photo)))
+   	if(file_exists("../photos/medium/".stripslashes($photo)))
 			unlink("../photos/medium/".stripslashes($photo));
 			
-	 if(file_exists("../photos/small/".stripslashes($photo)))
+	if(file_exists("../photos/small/".stripslashes($photo)))
 	 	unlink("../photos/small/".stripslashes($photo));
 	
-	 if(file_exists("../photos/large/".stripslashes($photo)))
+	if(file_exists("../photos/large/".stripslashes($photo)))
 	 	unlink("../photos/large/".stripslashes($photo));
 
     $msg     = $objgen->upd_Row("slider","image=''","id=".$id);
+	
     if($msg=="")
    	{
 		header("location:".$list_url."/?msg=3&edit=".$edit."&page=".$page);
@@ -86,17 +73,20 @@ if(isset($_GET['delimg']))
 
 if(isset($_POST['Create']))
 { 
-   $title1  = $objgen->check_input($_POST['title1']);
-   $title2  = $objgen->check_input($_POST['title2']);
-   $title3  = $objgen->check_input($_POST['title3']);
-   $link    = $objgen->check_input($_POST['link']);
+   	$title1  = $objgen->check_input($_POST['title1']);
+   	$title2  = $objgen->check_input($_POST['title2']);
+   	$title3  = $objgen->check_input($_POST['title3']);
+   	$link    = $objgen->check_input($_POST['link']);
 
-   $rules	  =	array();
-   $rules[] = "required,title1,Enter the Title 1";
-   $rules[] = "required,title2,Enter the Title 2";
-   $rules[] = "required,title3,Enter the Title 3";
-   $rules[] = "required,link,Enter the Link";
-
+	$adddiv  = "show";
+	$srdiv   = "none";
+	
+   	$rules	  =	array();
+   	$rules[] = "required,title1,Enter the Title 1";
+   	$rules[] = "required,title2,Enter the Title 2";
+   	$rules[] = "required,title3,Enter the Title 3";
+   	$rules[] = "required,link,Enter the Link";
+   	
    $errors		  =	$objval->validateFields($_POST, $rules);
 
    if(empty($errors))
@@ -104,42 +94,54 @@ if(isset($_POST['Create']))
 	  if($_FILES["image"]["name"]!="")
 	  {						
 	  	$upload = $objgen->upload_resize("image","slider","image",array('l','m','s'),"null","",array(1339,280,'crop',100),array(323,326,'crop',100),array(100,85,'crop',100));
-	  	if($upload[1]!="")
+	  	
+		if($upload[1]!="")
 	  	   $errors[] = $upload[1];
 	  	else
 	  	  $image = $upload[0];
-	  	 // $msg = $objgen->ins_Row('slider','image,status',"'".$image."','".$status."'");
-           $msg = $objgen->ins_Row('slider','title1,title2,title3,image,link',"'".$title1."','".$title2."','".$title3."','".$image."','".$link."'");
+	  	
+           
 	  }   
+	  $msg = $objgen->ins_Row('slider','title1,title2,title3,image,link',"'".$title1."','".$title2."','".$title3."','".$image."','".$link."'");
 	  if($msg=="")
 	  {
-	  	header("location:".$list_url."/?msg=1");
+	  		header("location:".$list_url."/?msg=1");
 	  }
-}
+	}
+
 }
 
 if(isset($_GET['edit']))
 {
 	$id 		= $_GET['edit'];
 	$result 	= $objgen->get_Onerow("slider","and id=".$id);
-	$image      = $objgen->check_tag($result['image']);
-	$status     = $objgen->check_tag($result['status']);
+	$title1     = $objgen->check_tag($result['title1']);
+	$title2	    = $objgen->check_tag($result['title2']);
+	$title3     = $objgen->check_tag($result['title3']);
+	$link 	    = $objgen->check_tag($result['link']);
+  	$image 	    = $objgen->check_tag($result['image']);
+
 	$adddiv     = "show";
-  $srdiv      = "none";
+  	$srdiv      = "none";
 }
 
 if(isset($_POST['Update']))
 {    
-	$status = $objgen->check_input($_POST['status']);
+   $title1  = $objgen->check_input($_POST['title1']);
+   $title2  = $objgen->check_input($_POST['title2']);
+   $title3  = $objgen->check_input($_POST['title3']);
+   $link    = $objgen->check_input($_POST['link']);
+
 	if($_FILES["image"]["name"]!="")
 	{
 		$upload = $objgen->upload_resize("image","slider","image",array('l','m','s'),$image,"",array(1339,280,'crop',100),array(495,303,'crop',100),array(100,85,'crop',100));
+			
 			if($upload[1]!="")
 			  $errors[] = $upload[1];
 			else
 			 $image = $upload[0];		
 	}
-		$msg = $objgen->upd_Row('slider',"image='".$image."',status='".$status."'","id=".$id);
+		$msg =     $objgen->upd_Row('slider',"image='".$image."',title1='".$title1."',title2='".$title2."',title3='".$title3."',link='".$link."'","id=".$id);
 
 	if($msg=="")
 	{
@@ -151,16 +153,18 @@ if(isset($_POST['Search']))
 {
 	$page=1;
 }
-$where = "";
-$row_count = $objgen->get_AllRowscnt("slider",$where);
+
+$where 		= "";
+$row_count 	= $objgen->get_AllRowscnt("slider",$where);
+
 if($row_count>0)
 {
- 	  $objPN->setCount($row_count);
-	  $objPN->pageSize($pagesize);
-	  $objPN->setCurrPage($page);
-	  $objPN->setDispType('PG_BOOSTRAP_AD');
-	  $pages = $objPN->get(array("un" => $un), 1, WEBLINKAD."/".$params[0]."/", "", "active");
-	  $res_arr = $objgen->get_AllRows("slider",$pagesize*($page-1),$pagesize,"id desc",$where);
+	$objPN->setCount($row_count);
+	$objPN->pageSize($pagesize);
+	$objPN->setCurrPage($page);
+	$objPN->setDispType('PG_BOOSTRAP_AD');
+	$pages 		= $objPN->get(array("un" => $un), 1, WEBLINKAD."/".$params[0]."/", "", "active");
+	$res_arr 	= $objgen->get_AllRows("slider",$pagesize*($page-1),$pagesize,"id desc",$where);
 }
 
 if(isset($_POST['Reset']))
@@ -251,7 +255,7 @@ if(isset($_POST['Reset']))
 			?>
             <div class="alert alert-success alert-dismissable">
               <button type="button" class="close" data-dismiss="alert" aria-hidden="true"> <i class="ace-icon fa fa-times"></i> </button>
-              <strong> <i class="ace-icon fa fa-check"></i> Sucsess! </strong> <?php echo $msg2; ?> <br>
+              <strong> <i class="ace-icon fa fa-check"></i> Success! </strong> <?php echo $msg2; ?> <br>
             </div>
             <?php
 			}
@@ -336,9 +340,7 @@ if(isset($_POST['Reset']))
           <div class="col-md-12">
             <div class="card ">
               <div class="card-header">
-                <h3 class="card-title">List
-                  <?=$pagehead?>
-                  s</h3>
+                <h3 class="card-title">List <?=$pagehead?>s</h3>
               </div>
               <div class="card-body table-responsive p-0">
                 <table class="table table-bordered table-hover table-sm">
@@ -360,20 +362,7 @@ if(isset($_POST['Reset']))
                     <td><?php echo $objgen->check_tag($val['title2']); ?></td>
                     <td><?php echo $objgen->check_tag($val['title3']); ?></td>
                     <td><img src="<?=URL?>photos/small/<?=$objgen->check_tag($val['image']); ?>"></td>
-                    <td><?php
-							if($val['status']=='active')
-							{
-							?>
-                      <a href="<?=$list_url?>/?id=<?=$val['id']?>&page=<?=$page?>&st=<?php echo $val['status']; ?>" role="button" class="btn btn-success btn-sm" ><i class="fas fa-unlock "></i></a>
-                      <?php
-							}
-							else
-							{
-							?>
-                      <a href="<?=$list_url?>/?id=<?=$val['id']?>&page=<?=$page?>&st=<?php echo $val['status']; ?>" role="button" class="btn btn-danger btn-sm" ><i class="fas fa-lock"></i></a>
-                      <?php
-							}
-							?>
+                    <td>
                       <a href="<?=$list_url?>/?edit=<?=$val['id']?>&page=<?=$page?>" role="button" class="btn btn-primary btn-sm" ><i class="fas fa-edit"></i></a> <a href="<?=$list_url?>/?del=<?=$val['id']?>&page=<?=$page?>" role="button" onClick="return confirm('Do you want to delete this Slider?')" class="btn btn-danger btn-sm" ><i class="fas fa-trash-alt"></i></a> </td>
                   </tr>
                   <?php

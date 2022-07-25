@@ -1,15 +1,19 @@
 <?php
 require_once "includes/includepath.php";
 require_once "chk_login.php";
+
 $objgen		= new general();
 $objval		= new validate();
+
 $pagehead	= "Tax";
 $list_url 	= URLAD."tax";
 $srdiv    	= "none";
 $adddiv   	= "none";
+
 $objPN		= new page(1);
 $pagesize	=	20;
 $page	 	= isset($_REQUEST['page'])	?	$_REQUEST['page']	:	"1";
+
 if(isset($_GET['del']))
 {
 	$id		= $_GET['del'];
@@ -19,6 +23,7 @@ if(isset($_GET['del']))
 		header("location:".$list_url."/?msg=3&page=".$page);
 	}
 }
+
 if($_GET['msg']==1)
 {
 	$msg2 		= "$pagehead Created Successfully.";
@@ -38,34 +43,31 @@ if($_GET['msg']==3)
 
 if(isset($_POST['Create']))
 { 
-   $name  			= $objgen->check_input($_POST['name']);
-   $india  			= $objgen->check_input($_POST['india']);
-   $international   = $objgen->check_input($_POST['international']);
-   $kerala   		= $objgen->check_input($_POST['kerala']);
-   $indiantax   	= $objgen->check_input($_POST['indian_name']);
-   $internationaltax= $objgen->check_input($_POST['international_name']);
-	if($india=="")
-	{
-		$india=0;
-	}
-	if($international=="")
-	{
-		$international=0;
-	}
-	if($kerala=="")
-	{
-		$kerala=0;
-	}
-  $rules	=	array();
-  $rules[] 	=	"required,name,Enter the Tax";
-  $errors  	=	$objval->validateFields($_POST, $rules);
-  $brd_exit = $objgen->chk_Ext("tax","name='$name'");
+	$name  				= 	$objgen->check_input($_POST['name']);
+	$india  			= 	$objgen->check_input($_POST['india']);
+	$international   	= 	$objgen->check_input($_POST['international']);
+	$kerala   			= 	$objgen->check_input($_POST['kerala']);
+	$indiantax   		= 	$objgen->check_input($_POST['indian_name']);
+	$internationaltax	= 	$objgen->check_input($_POST['international_name']);
+
+	$rules				=	array();
+	$rules[] 			=	"required,name,Enter the Tax";
+	$rules[] 			=	"required,india,Enter the India (Percentage)";
+	$rules[] 			=	"required,international,Enter the International(Percentage)";
+	$rules[] 			=	"required,kerala,Enter the Kerala(Percentage)";
+	$rules[] 			=	"required,indian_name,Enter the India Tax Name";
+	$rules[] 			=	"required,international_name,Enter the International Tax Name";
+	
+	$errors  			=	$objval->validateFields($_POST, $rules);
+	$brd_exit 			= 	$objgen->chk_Ext("tax","name='$name'");
+  
 	if($brd_exit>0)
 	{
 		$errors[] 	= "This tax is already exists.";
 		$adddiv  	= "show";
 		$srdiv   	= "none";
 	}
+	
    if(empty($errors))
 	{
 		$msg = $objgen->ins_Row('tax','name,india,international,kerala,indian_name,international_name',"'".$name."','".$india."','".$international."','".$kerala."','".$indiantax."','".$internationaltax."'");
@@ -91,58 +93,58 @@ if(isset($_GET['edit']))
 
 if(isset($_POST['Update']))
 {    
-	$name  			    = $objgen->check_input($_POST['name']);
-  	$india  		    = $objgen->check_input($_POST['india']);
-  	$international    	= $objgen->check_input($_POST['international']);
-  	$kerala   		    = $objgen->check_input($_POST['kerala']);
-  	$indiantax   	    = $objgen->check_input($_POST['indian_name']);
-  	$internationaltax	= $objgen->check_input($_POST['international_name']);
-  	if($india=="")
-	{
-		$india=0;
-	}
-	if($international=="")
-	{
-		$international=0;
-	}
-	if($kerala=="")
-	{
-		$kerala=0;
-	}
-	$errors   	= array();
-	$rules		=	array();
-	$rules[] 	= 	"required,name,Enter the Tax";
-	$errors  	= 	$objval->validateFields($_POST, $rules);
-	$brd_exit 	= $objgen->chk_Ext("tax","name= '$name' and id<>".$id);
+	$name  			    	= $objgen->check_input($_POST['name']);
+  	$india  		    	= $objgen->check_input($_POST['india']);
+  	$international    		= $objgen->check_input($_POST['international']);
+  	$kerala   		    	= $objgen->check_input($_POST['kerala']);
+  	$indiantax   	    	= $objgen->check_input($_POST['indian_name']);
+  	$internationaltax		= $objgen->check_input($_POST['international_name']);	
+	
+	$errors   		= 	array();
+	$rules			=	array();
+	$rules[] 		= 	"required,name,Enter the Tax";
+	$rules[] 		= 	"required,india,Enter the Tax";
+	$rules[] 		= 	"required,international,Enter the Tax";
+	$rules[] 		= 	"required,kerala,Enter the Tax";
+	$rules[] 		= 	"required,indian_name,Enter the Tax";
+	$rules[] 		= 	"required,international_name,Enter the Tax";
+	$errors  		= 	$objval->validateFields($_POST, $rules);
+	$brd_exit 		= 	$objgen->chk_Ext("tax","name= '$name' and id<>".$id);
+	
 	if($brd_exit>0)
 	{
 		$errors[]	= "This $pagehead is already exists.";
 		$adddiv   	= "show";
 		$srdiv    	= "none";
 	}
+	
 	if(empty($errors))
 	{	 
-		$msg = $objgen->upd_Row('tax',"name='".$name."',india='".$india."',international='".$international."',kerala='".$kerala."',indian_name='".$indiantax."',international_name='".$internationaltax."'","id=".$id);
-	  if($msg=="")
-	  {
-		  header("location:".$list_url."/?msg=2&page=".$page);
-	  }
-	}
+		$msg 		= 	$objgen->upd_Row('tax',"name='".$name."',india='".$india."',international='".$international."',kerala='".$kerala."',indian_name='".$indiantax."',international_name='".$internationaltax."'","id=".$id);
+	 	
+		if($msg=="")
+	  	{
+			header("location:".$list_url."/?msg=2&page=".$page);
+		}
+		}
 }
+
 if(isset($_POST['Search']))
 {
-	$page=1;
+	$page		=	1;
 }
  
 $where = "";
 
 if(isset($_REQUEST['un']) &&  trim($_REQUEST['un'])!="")
 {
-	$un     = trim($_REQUEST['un']);
-	$where .= " and name like '%".$un."%'";
-	$srdiv  = "block";
+	$un     	= trim($_REQUEST['un']);
+	$where 	   .= " and name like '%".$un."%'";
+	$srdiv  	= "block";
 }
+
 $row_count = $objgen->get_AllRowscnt("tax",$where);
+
 if($row_count>0)
 {
 	  $objPN->setCount($row_count);
@@ -152,11 +154,13 @@ if($row_count>0)
 	  $pages 	= $objPN->get(array("un" => $un), 1, WEBLINKAD."/".$params[0]."/", "", "active");
 	  $res_arr 	= $objgen->get_AllRows("tax",$pagesize*($page-1),$pagesize,"id desc",$where);
 }
+
 if(isset($_POST['Reset']))
 {
 	unset($_REQUEST);
 	header("location:".$list_url);
 }
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -205,40 +209,40 @@ if(isset($_POST['Reset']))
           <div class="col-md-12" align="right" style="clear:both">
             <button type="button"  class="btn btn-inline btn-danger" onClick="click_button(1)"><i class="fa fa-edit"></i> New</button>
             <button type="button"  class="btn btn-inline btn-primary" onClick="click_button(2)" ><i class="fa fa-search"></i> Search</button>
-            <a type="button" href="<?=$list_url?>"  class="btn btn-inline btn-warning"><i class="fa fa-refresh"></i> Reset</a> </div>
+          </div>
         </div>
         <div class="row">
           <div class="col-md-12">
             <?php
-			if($msg!="")
-			{
-			?>
-            <div class="alert alert-danger alert-dismissable">
-              <button type="button" class="close" data-dismiss="alert" aria-hidden="true"> <i class="ace-icon fa fa-times"></i> </button>
-              <strong> <i class="ace-icon fa fa-times"></i> Oh snap! </strong> <?php echo $msg; ?> <br>
-            </div>
-            <?php
-			}
-			?>
-            <?php
-			if (!empty($errors)) 
-			{
-			?>
-            <div class="alert alert-danger alert-dismissable"> <i class="fa fa-ban"></i>
-              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-              <b>Please fix the following errors:</b> <br>
+			  if($msg!="")
+			  {
+			  ?>
+              <div class="alert alert-danger alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"> <i class="ace-icon fa fa-times"></i> </button>
+                <strong> <i class="ace-icon fa fa-times"></i> Oh snap! </strong> <?php echo $msg; ?> <br>
+              </div>
               <?php
-			foreach ($errors as $error1)
-			echo "<div> - ".$error1." </div>";
-			?>
-            </div>
-            <?php
-			} 
-			?>
-            <?php
-			if($msg2!="")
-			{
-			?>
+			  }
+			  ?>
+              <?php
+			  if (!empty($errors)) 
+			  {
+			  ?>
+              <div class="alert alert-danger alert-dismissable"> <i class="fa fa-ban"></i>
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <b>Please fix the following errors:</b> <br>
+                <?php
+			  foreach ($errors as $error1)
+			  echo "<div> - ".$error1." </div>";
+			  ?>
+              </div>
+              <?php
+			  } 
+			  ?>
+              <?php
+			  if($msg2!="")
+			  {
+			  ?>
             <div class="alert alert-success alert-dismissable">
               <button type="button" class="close" data-dismiss="alert" aria-hidden="true"> <i class="ace-icon fa fa-times"></i> </button>
               <strong> <i class="ace-icon fa fa-check"></i> Sucsess! </strong> <?php echo $msg2; ?> <br>
@@ -252,47 +256,45 @@ if(isset($_POST['Reset']))
           <div class="col-md-12">
             <div class="card card-<?=TH_COLOR?>">
               <div class="card-header">
-                <h3 class="card-title">Enter
-                  <?=$pagehead?>
-                  Informations</h3>
+                <h3 class="card-title">Enter <?=$pagehead?> Informations</h3>
               </div>
               <form role="form" method="post" enctype="multipart/form-data" >
                 <div class="card-body">
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
-                        <label for="name">Name <span class="error" style="color:red;">*</span></label>
+                        <label for="name">Kerala Tax Name<span class="error" style="color:red;">*</span></label>
                         <input type="text" class="form-control" value="<?=$name?>" name="name" id="name" placeholder = "Name" required />
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
-                        <label for="state">Kerala (Percentage)</label>
-                        <input type="text" class="form-control" value="<?=$kerala?>" name="kerala" id="kerala" placeholder ="Kerala (Percentage)"/>
+                        <label for="state">Kerala (Percentage)<span class="error" style="color:red;">*</span></label>
+                        <input type="text" class="form-control" value="<?=$kerala?>" name="kerala" id="kerala" placeholder ="Kerala (Percentage)" required/>
                       </div>
                     </div>
                     <div  class="col-md-6">
                       <div class="form-group">
-                        <label for="india">Indian Tax Name</label>
-                        <input type="text" class="form-control" value="<?=$indiantax?>" name="indian_name" id="indian_name" placeholder ="Indian Tax Name"/>
+                        <label for="india">Indian Tax Name<span class="error" style="color:red;">*</span></label>
+                        <input type="text" class="form-control" value="<?=$indiantax?>" name="indian_name" id="indian_name" placeholder ="Indian Tax Name" required/>
                       </div>
                     </div>
                     <div  class="col-md-6">
                       <div class="form-group">
-                        <label for="">India (Percentage)</label>
-                        <input type="text" class="form-control" value="<?=$india?>" name="india" id="india" placeholder ="India (Percentage)" />
+                        <label for="">India (Percentage)<span class="error" style="color:red;">*</span></label>
+                        <input type="text" class="form-control" value="<?=$india?>" name="india" id="india" placeholder ="India (Percentage)" required/>
                       </div>
                     </div>
                     <div  class="col-md-6">
                       <div class="form-group">
-                        <label for="">International Tax Name</label>
-                        <input type="text" class="form-control" value="<?=$internationaltax?>" name="international_name" id="international_name" placeholder ="International Tax Name"/>
+                        <label for="">International Tax Name<span class="error" style="color:red;">*</span></label>
+                        <input type="text" class="form-control" value="<?=$internationaltax?>" name="international_name" id="international_name" placeholder ="International Tax Name" required/>
                       </div>
                     </div>
                     <div  class="col-md-6">
                       <div class="form-group">
-                        <label for="">International (Percentage)</label>
-                        <input type="text" class="form-control" value="<?=$international?>" name="international" id="international" placeholder = "International (Percentage)"/>
+                        <label for="">International (Percentage)<span class="error" style="color:red;">*</span></label>
+                        <input type="text" class="form-control" value="<?=$international?>" name="international" id="international" placeholder = "International (Percentage)" required/>
                       </div>
                     </div>
                   </div>
@@ -330,7 +332,7 @@ if(isset($_POST['Reset']))
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
-                        <label for="Username">Name</label>
+                        <label for="Username">Kerala Tax Name</label>
                         <input type="text" class="form-control" value="<?=$un?>" name="un" id="un" placeholder ="Name">
                       </div>
                     </div>
@@ -354,11 +356,11 @@ if(isset($_POST['Reset']))
                 <table class="table table-bordered table-hover table-sm">
                   <tr>
                     <th>Id</th>
-                    <th>Name</th>
+                    <th>Kerala Tax Name</th>
                     <th>Kerala (Percentage)</th>
-                    <th>Indian Name</th>
+                    <th>Indian Tax Name</th>
                     <th>Indian (Percentage)</th>
-                    <th>International Name</th>
+                    <th>International Tax Name</th>
                     <th>International(Percentage)</th>
                     <th>Action</th>
                   </tr>
@@ -397,8 +399,10 @@ if(isset($_POST['Reset']))
         </div>
         <!-- /.row (main row) -->
       </div>
+      
       <!-- /.container-fluid -->
     </section>
+	</div>
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->

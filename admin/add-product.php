@@ -4,23 +4,29 @@ require_once "chk_login.php";
 
 $objgen			=	new general();
 $objval			=	new validate();
+
 $pagehead		= "Product";
 $list_url 		= URLAD."list-product";
 $add_url    	= URLAD."add-product";
 $create_date  	= date('d-m-Y');
+
 $srd="none";	
 $sr="none";	
+
 $page	 		= isset($_REQUEST['page'])	?	$_REQUEST['page']	:	"1";
+
 if($_GET['msg']==1)
 {
   	$msg2 	  	= "product Created Successfully.";
   	$adddiv   	= "show";
   	$srdiv    	= "none";
 }
+
 if($_GET['msg']==3)
 {
   	$msg2 		= "$product Deleted Successfully.";
 }
+
 if(isset($_GET['delimg']))
 {
      $id      	= $_GET['delimg'];
@@ -40,11 +46,13 @@ if(isset($_GET['delimg']))
 	 	unlink("../photos/large/".stripslashes($photo));
 
     $msg     	= $objgen->del_Row("product_image","id=".$id);
+   
    if($msg=="")
    {
 		header("location:".$add_url."/?msg=3&edit=".$edit."&page=".$page);
    }
 }
+
 if(isset($_POST['Create']))
 { 
    	$model_no		 = $objgen->check_input($_POST['model_no']);
@@ -76,28 +84,7 @@ if(isset($_POST['Create']))
    	$cat_name         = $objgen->check_input($category_arr['cat_name']);
    	$sub_name         = $objgen->check_input($sub_arr['sub_cat_name']);
    	$shipp_name 		 = $objgen->check_input($_POST['shipp_name']);
-
-   if($attribute=="")
-   {
-   		$attribute=0;
-   }
-   if($shipp_amount=="")
-   {
-   	 	$shipp_amount=0;
-   }
-   if($shipp_id=="")
-   {
-   	 	$shipp_id=0;
-   }
-   if($our_price=="")
-   {
-   		$our_price=0;
-   }
-   if($tax=="")
-   {
-	  	$tax=0;
-   }
-	
+		
    $feature_title1 	=	$objgen->check_input($_POST['feature_title1']);
    $feature_desc1	=	$objgen->check_input($_POST['feature_desc1']);
    $feature_title2	=	$objgen->check_input($_POST['feature_title2']);
@@ -130,23 +117,13 @@ if(isset($_POST['Create']))
 		$adddiv   = "show";
 		$srdiv    = "none";
 	}
+	
    	if(empty($errors))
 	{
-		$msg = $objgen->ins_Row('product','create_date,model_no,brand,category,sub_category,cat_name,sub_name,product_name,youtube_link,
-		actual_price,status,used,quantity,country,remark,prod_desc,taxt_id,attr_id,p_status,best_seller,
-		featured,shipp_type,shipp_name,shipp_amount,shipp_id,our_price,price_percentage,feature1_title,feature2_title,feature3_title,feature4_title,
-		feature5_title,feature1_desc,feature2_desc,feature3_desc,feature4_desc,feature5_desc'
-		,"'". date('Y-m-d',strtotime($_POST['create_date']))."',
-		'".$model_no."','".$brand."','".$category."','".$sub_category."','".$cat_name."','".$sub_name."','".$product_name."','".$youtube_link."',
-		'".$actual_price."','".$status."','".$used."','".$quantity."','".$country."','"
-		.$remark."','".$objgen->baseencode($description)."','".$tax."','".$attribute."','".$p_status."','".$best_seller."','".$featured.
-		"','".$shipp_type."','".$shipp_name."','".$shipp_amount."','".$shipp_id."','".$our_price."','".$price_percentage."','".$feature_title1."'
-		,'".$feature_title2."','".$feature_title3."','".$feature_title4."','".$feature_title5."','".$feature_desc1."','".$feature_desc2."','".$feature_desc3."','".$feature_desc4."','".$feature_desc5."'");
+		$msg = $objgen->ins_Row('product','create_date,model_no,brand,category,sub_category,cat_name,sub_name,product_name,youtube_link,actual_price,status,used,quantity,country,remark,prod_desc,taxt_id,attr_id,p_status,best_seller,featured,shipp_type,shipp_name,shipp_amount,shipp_id,our_price,price_percentage,feature1_title,feature2_title,feature3_title,feature4_title,feature5_title,feature1_desc,feature2_desc,feature3_desc,feature4_desc,feature5_desc',"'". date('Y-m-d',strtotime($_POST['create_date']))."','".$model_no."','".$brand."','".$category."','".$sub_category."','".$cat_name."','".$sub_name."','".$product_name."','".$youtube_link."','".$actual_price."','".$status."','".$used."','".$quantity."','".$country."','".$remark."','".$objgen->baseencode($description)."','".$tax."','".$attribute."','".$p_status."','".$best_seller."','".$featured."','".$shipp_type."','".$shipp_name."','".$shipp_amount."','".$shipp_id."','".$our_price."','".$price_percentage."','".$feature_title1."','".$feature_title2."','".$feature_title3."','".$feature_title4."','".$feature_title5."','".$feature_desc1."','".$feature_desc2."','".$feature_desc3."','".$feature_desc4."','".$feature_desc5."'");
 		
-		 if($msg=="")
-		 {
-
-		
+	 if($msg=="")
+	 {
 		if($_FILES["main_img"]["name"]!="")
 		{
 			$insrt = $objgen->get_insetId();
@@ -156,44 +133,43 @@ if(isset($_POST['Create']))
 					else
 					  $image = $upload[0];
 					  
-					  $msg = $objgen->ins_Row('product_image','image,cover,prod_id',"'".$image."','yes','".$insrt."'");
-					  
-				} 
-				if(count($_FILES['subimage']['tmp_name'])>0)
+					  $msg = $objgen->ins_Row('product_image','image,cover,prod_id',"'".$image."','yes','".$insrt."'");	  
+		} 
+		
+		if(count($_FILES['subimage']['tmp_name'])>0)
+		{
+			for($i=0; $i < count($_FILES['subimage']['tmp_name']); $i++)
+			{
+					
+			
+				if($_FILES['subimage']['name'][$i]!="")
 				{
-				for($i=0; $i < count($_FILES['subimage']['tmp_name']); $i++)
-				{
-						
-
-					if($_FILES['subimage']['name'][$i]!="")
+					$file_name = date("YmdHis").$_FILES['subimage']['name'][$i];
+			
+					if(copy($_FILES['subimage']['tmp_name'][$i],'../photos/orginal/'.$file_name))
 					{
-						$file_name = date("YmdHis").$_FILES['subimage']['name'][$i];
-
-						if(copy($_FILES['subimage']['tmp_name'][$i],'../photos/orginal/'.$file_name))
-						{
-							
-		 					$image 		= new resize("../photos/orginal/".$file_name);
-		 					$image->resizeImage(1024,920,'auto');
-		 					$image->saveImage("../photos/large/".$file_name);
-
-		 					$image 		= new resize("../photos/orginal/".$file_name);
-		 					$image->resizeImage(495,303,'auto');
-		 					$image->saveImage("../photos/medium/".$file_name);
-
-		 					$image 		= new resize("../photos/orginal/".$file_name);
-		 					$image->resizeImage(100,85,'auto');
-		 					$image->saveImage("../photos/small/".$file_name);
-
-                         $msg = $objgen->ins_Row('product_image','image,cover,prod_id',"'".$file_name."','no','".$insrt."'");
-		 					
-		 				}						  
-		 			}						
-		 		}
+						
+						$image 		= new resize("../photos/orginal/".$file_name);
+						$image->resizeImage(1024,920,'auto');
+						$image->saveImage("../photos/large/".$file_name);
+			
+						$image 		= new resize("../photos/orginal/".$file_name);
+						$image->resizeImage(495,303,'auto');
+						$image->saveImage("../photos/medium/".$file_name);
+			
+						$image 		= new resize("../photos/orginal/".$file_name);
+						$image->resizeImage(100,85,'auto');
+						$image->saveImage("../photos/small/".$file_name);
+			
+					 $msg = $objgen->ins_Row('product_image','image,cover,prod_id',"'".$file_name."','no','".$insrt."'");
+						
+					}						  
+				}						
+			}
 		}
 		
 	 header("location:".$add_url."/?msg=1");
-		}
-			   
+	}		   
 	}
 	
 }
@@ -233,22 +209,22 @@ if(isset($_GET['edit']))
 		$sr="block";
 		$srd="none";
 	}
-	$shipp_amount	      = $objgen->check_tag($result['shipp_amount']);
-	$shipp_name	          = $objgen->check_tag($result['shipp_name']);
-	$shipp_id	          = $objgen->check_tag($result['shipp_id']);
+	$shipp_amount	    = $objgen->check_tag($result['shipp_amount']);
+	$shipp_name	        = $objgen->check_tag($result['shipp_name']);
+	$shipp_id	        = $objgen->check_tag($result['shipp_id']);
 	//echo $attribute; exit();
-	$tax  	  		  = $objgen->check_tag($result['taxt_id']);
-	$price_percentage = $objgen->check_tag($result['price_percentage']);
-	$where = " and cover='no' and prod_id=".$id;
-	$img_count = $objgen->get_AllRowscnt("product_image",$where);
+	$tax  	  		  	= $objgen->check_tag($result['taxt_id']);
+	$price_percentage 	= $objgen->check_tag($result['price_percentage']);
+	$where 				= " and cover='no' and prod_id=".$id;
+	$img_count 			= $objgen->get_AllRowscnt("product_image",$where);
 	
     if($img_count>0)
 	{
 		  $img_arr = $objgen->get_AllRows("product_image",0,$img_count,"id asc",$where);
 	}
-	$result2   	  = $objgen->get_Onerow("product_image"," and cover='yes' and prod_id=".$id);
-	$main_img 	  = $objgen->check_tag($result2['image']);
-	$main_img_id  = $objgen->check_tag($result2['id']);
+	$result2   	  	= $objgen->get_Onerow("product_image"," and cover='yes' and prod_id=".$id);
+	$main_img 	  	= $objgen->check_tag($result2['image']);
+	$main_img_id  	= $objgen->check_tag($result2['id']);
 
    $feature_title1 	=	$objgen->check_tag($result['feature1_title']);
    $feature_desc1	=	$objgen->check_tag($result['feature1_desc']);
@@ -314,32 +290,32 @@ if(isset($_POST['Update']))
 	}
 	 
 	$feature_title1 	=	$objgen->check_input($_POST['feature_title1']);
-	$feature_desc1	=	$objgen->check_input($_POST['feature_desc1']);
-	$feature_title2	=	$objgen->check_input($_POST['feature_title2']);
-	$feature_desc2	=	$objgen->check_input($_POST['feature_desc2']);
+	$feature_desc1		=	$objgen->check_input($_POST['feature_desc1']);
+	$feature_title2		=	$objgen->check_input($_POST['feature_title2']);
+	$feature_desc2		=	$objgen->check_input($_POST['feature_desc2']);
 	$feature_title3 	=	$objgen->check_input($_POST['feature_title3']);
-	$feature_desc3	=	$objgen->check_input($_POST['feature_desc3']);
+	$feature_desc3		=	$objgen->check_input($_POST['feature_desc3']);
 	$feature_title4 	=	$objgen->check_input($_POST['feature_title4']);
-	$feature_desc4	=	$objgen->check_input($_POST['feature_desc4']);
+	$feature_desc4		=	$objgen->check_input($_POST['feature_desc4']);
 	$feature_title5 	=	$objgen->check_input($_POST['feature_title5']);
-	$feature_desc5	=	$objgen->check_input($_POST['feature_desc5']);
+	$feature_desc5		=	$objgen->check_input($_POST['feature_desc5']);
 	
    // echo $_SESSION['category']; exit();
  
-	$rules		  =	array();
-	$rules[]       = "required,create_date,Enter the Date";
-	$rules[]		  =	"required,model_no,Enter the model no";
-	$rules[]		  =	"required,category,Enter the category";
-	$rules[]		  =	"required,sub_category,Enter the sub category";
-	$rules[]		  =	"required,product_name,Enter the product name";
-	$rules[]		  =	"required,actual_price,Enter the deal price";
-	$rules[]		  =	"required,country,Enter the Country";
-	$rules[]		  =	"required,status,Select the status";
-	$rules[]		  =	"required,quantity,Enter the quantity";
+	$rules		  	=	array();
+	$rules[]       	= "required,create_date,Enter the Date";
+	$rules[]		=	"required,model_no,Enter the model no";
+	$rules[]		=	"required,category,Enter the category";
+	$rules[]		=	"required,sub_category,Enter the sub category";
+	$rules[]		=	"required,product_name,Enter the product name";
+	$rules[]		=	"required,actual_price,Enter the deal price";
+	$rules[]		=	"required,country,Enter the Country";
+	$rules[]		=	"required,status,Select the status";
+	$rules[]		=	"required,quantity,Enter the quantity";
 	
-	$errors		  =	$objval->validateFields($_POST, $rules);
+	$errors		  	=	$objval->validateFields($_POST, $rules);
 
-	$brd_exit 		  = $objgen->chk_Ext("product","model_no='$model_no' and id<>".$id);
+	$brd_exit 		= $objgen->chk_Ext("product","model_no='$model_no' and id<>".$id);
 	if($brd_exit>0)
 	{
 		$errors[]	= "This Model No is already exists.";
@@ -348,11 +324,7 @@ if(isset($_POST['Update']))
 	}
 	if(empty($errors))
 	{	 
-		$msg = $objgen->upd_Row('product',"create_date='". date('Y-m-d',strtotime($_POST['create_date']))."',model_no='".$model_no."',brand='".$brand."',
-		category='".$category."',sub_category='".$sub_category."',cat_name='".$cat_name."',sub_name='".$sub_name."',product_name='".$product_name."',
-		youtube_link='".$youtube_link."',actual_price='".$actual_price."',status='".$status."',used='".$used."',quantity='".$quantity."',country='".$country."',remark='".$remark."',
-		prod_desc='".$objgen->baseencode($description)."',price_percentage='".$price_percentage."',taxt_id='".$tax."',attr_id='".$attribute."'
-		,p_status='".$p_status."',best_seller='".$best_seller."',featured='".$featured."',shipp_type='".$shipp_type."',shipp_name='".$shipp_name."',shipp_amount='".$shipp_amount."',shipp_id='".$shipp_id."',our_price='".$our_price."'
+		$msg 		= $objgen->upd_Row('product',"create_date='". date('Y-m-d',strtotime($_POST['create_date']))."',model_no='".$model_no."',brand='".$brand."',category='".$category."',sub_category='".$sub_category."',cat_name='".$cat_name."',sub_name='".$sub_name."',product_name='".$product_name."',youtube_link='".$youtube_link."',actual_price='".$actual_price."',status='".$status."',used='".$used."',quantity='".$quantity."',country='".$country."',remark='".$remark."',prod_desc='".$objgen->baseencode($description)."',price_percentage='".$price_percentage."',taxt_id='".$tax."',attr_id='".$attribute."',p_status='".$p_status."',best_seller='".$best_seller."',featured='".$featured."',shipp_type='".$shipp_type."',shipp_name='".$shipp_name."',shipp_amount='".$shipp_amount."',shipp_id='".$shipp_id."',our_price='".$our_price."'
 		,our_price='".$our_price."',feature1_title='".$feature_title1."',feature2_title='".$feature_title2."',feature3_title='".$feature_title3."',feature4_title='".$feature_title4."',feature5_title='".$feature_title5."',feature1_desc='".$feature_desc1."',
 		feature2_desc='".$feature_desc2."',feature3_desc='".$feature_desc3."',feature4_desc='".$feature_desc4."',feature5_desc='".$feature_desc5."'","id=".$id);
 
@@ -451,17 +423,13 @@ if($ctry_cnt>0)
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>
-<?=$pagehead
-?> | <?php echo TITLE; ?></title>
+  <?=$pagehead?> | <?php echo TITLE; ?>
+</title>
 <?php require_once "header-script.php"; ?>
-<link href="<?=URLAD
-?>plugins/bootstrap-select-1.13.9/dist/css/bootstrap-select.css" rel="stylesheet" />
-<link rel="stylesheet" href="<?=URLAD
-?>plugins/summernote/summernote-bs4.css">
-<link rel="stylesheet" href="<?=URLAD
-?>plugins/datepicker/datepicker3.css">
-<link href="<?=URLAD
-?>plugins/multiselect/multiselect.css" media="screen" rel="stylesheet" type="text/css">
+<link href="<?=URLAD?>plugins/bootstrap-select-1.13.9/dist/css/bootstrap-select.css" rel="stylesheet" />
+<link rel="stylesheet" href="<?=URLAD?>plugins/summernote/summernote-bs4.css">
+<link rel="stylesheet" href="<?=URLAD?>plugins/datepicker/datepicker3.css">
+<link href="<?=URLAD?>plugins/multiselect/multiselect.css" media="screen" rel="stylesheet" type="text/css">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -474,17 +442,14 @@ if($ctry_cnt>0)
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark"><?=$pagehead
-?>s</h1>
+            <h1 class="m-0 text-dark"><?=$pagehead?>s</h1>
           </div>
           <!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="<?=URLAD
-?>">Home</a></li>
+              <li class="breadcrumb-item"><a href="<?=URLAD?>">Home</a></li>
               <li class="breadcrumb-item active">
-                <?=$pagehead
-?>
+                <?=$pagehead?>
               </li>
             </ol>
           </div>
@@ -531,7 +496,7 @@ if ($msg2 != "")
 ?>
           <div class="alert alert-success alert-dismissable">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true"> <i class="ace-icon fa fa-times"></i> </button>
-            <strong> <i class="ace-icon fa fa-check"></i> Sucsess! </strong> <?php echo $msg2; ?> <br>
+            <strong> <i class="ace-icon fa fa-check"></i> Success!! </strong> <?php echo $msg2; ?> <br>
           </div>
           <?php
 }
