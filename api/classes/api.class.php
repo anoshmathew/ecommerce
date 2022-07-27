@@ -25,7 +25,7 @@ class api
 			
 			function processApi(){
 				
-			$func = strtolower(trim(str_replace("/","",$_REQUEST['rquest'])));
+			$func = $func ? strtolower(trim(str_replace("/","",$_REQUEST['rquest']))) : "";
 			if((int)method_exists($this->rest,$func) > 0)
 				$this->rest->$func();
 			else

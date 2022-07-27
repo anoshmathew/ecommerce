@@ -275,43 +275,52 @@ if(isset($_POST['Reset']))
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
-                        <label for="image">Slider Image (992 px x 439 px)<span class="error" style="color:red;">*</span></label>
+                        <label for="image">Slider Image (992 px x 439 px)
+                          <?php
+                          if(!isset($_GET['edit']))
+										      {
+										      ?>
+                            <span class="error" style="color:red;">*</span>
+                              </label>
+                            <?php
+										      }
+										      ?>    
                         <br>
                         <input type="file"  name="image" id="image"/>
                         <br>
                         <div id="imagePreview1"></div>
                         <?php
-										if($image!="")
-										{
-										?>
-                        <p class="help-block"><img src="<?=URL?>photos/small/<?php echo $image; ?>" width="93" height="93"  />&nbsp;&nbsp;<a href="<?=$list_url?>/?delimg=<?=$id?>&edit=<?=$id?>&page=<?=$page?>" role="button" onClick="return confirm('Do you want to delete this Image?')"><i class="fas fa-trash-alt"></i></a></p>
-                        <?php
-										}
-										?>
+										    if($image!="")
+										    {
+										    ?>
+                            <p class="help-block"><img src="<?=URL?>photos/small/<?php echo $image; ?>" width="93" height="93"  />&nbsp;&nbsp;<a href="<?=$list_url?>/?delimg=<?=$id?>&edit=<?=$id?>&page=<?=$page?>" role="button" onClick="return confirm('Do you want to delete this Image?')"><i class="fas fa-trash-alt"></i></a></p>
+                            <?php
+										    }
+										    ?>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="title1">Title 1<span class="error" style="color:red;">*</span></label>
-                        <input type="text" class="form-control" value="<?=$title1?>" name="title1" id="title1" placeholder = "Title 1"  />
+                        <input type="text" class="form-control" value="<?=$title1?>" name="title1" id="title1" placeholder = "Title 1" required />
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="title2">Title 2<span class="error" style="color:red;">*</span></label>
-                        <input type="text" class="form-control" value="<?=$title2?>" name="title2" id="title2" placeholder = "Title 2"  />
+                        <input type="text" class="form-control" value="<?=$title2?>" name="title2" id="title2" placeholder = "Title 2" required />
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="title3">Title 3<span class="error" style="color:red;">*</span></label>
-                        <input type="text" class="form-control" value="<?=$title3?>" name="title3" id="title3" placeholder = "Title 3"  />
+                        <input type="text" class="form-control" value="<?=$title3?>" name="title3" id="title3" placeholder = "Title 3" required />
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="link">Link<span class="error" style="color:red;">*</span></label>
-                        <input type="text" class="form-control" value="<?=$link?>" name="link" id="link" placeholder = "Link"  />
+                        <input type="text" class="form-control" value="<?=$link?>" name="link" id="link" placeholder = "Link" required />
                       </div>
                     </div>
                   </div>
